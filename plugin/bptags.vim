@@ -30,9 +30,16 @@ function! ReadBreakpoints(filepath)
       let m = matchlist(line, '^break\s\+\(\k\+\)$')
       let tags = taglist(m[1])
       if len(tags) > 0
-        " TODO: There may be a smarter way rather than simply reading
-        " every single match. Could cause problems.
         for t in tags
+
+          " Neovim devs decided to do what ever this encoding is so if the
+          " line number doesn't exist, we add it ourselves. Idk why they did
+          " this but it makes me irrationally angry lol.
+          if !has_key(t, 'line')
+            let matchnum = matchstr(t['cmd'], '%\zs\d\+\ze[l]')
+            let t['line'] = matchnum
+          endif
+
           call add(qflist, {
                 \ 'filename': t['filename'],
                 \ 'lnum': t['line'],
