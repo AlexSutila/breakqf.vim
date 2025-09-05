@@ -1,6 +1,5 @@
 " Read saved breakpoint files created by GDB and insert them into the quickfix
 " list automatically
-
 function! ReadBreakpoints(filepath)
   let lines = readfile(a:filepath)
   let qflist = []
@@ -9,10 +8,21 @@ function! ReadBreakpoints(filepath)
     " Match file + line number form: break file.c:123
     if line =~# '^break\s\+\(\f\+\):\(\d\+\)$'
       let m = matchlist(line, '^break\s\+\(\f\+\):\(\d\+\)$')
+      let file = m[1]
+      let lnum = str2nr(m[2])
+
+      " Do relative path resolving in case the full relpath is not
+      " provided in the information given in the breakpoints file
+      if !filereadable(file)
+        let found = findfile(fnamemodify(file, ':t'), '**')
+        if !empty(found)
+          let file = found
+        endif
+      endif
       call add(qflist, {
-            \ 'filename': m[1],
-            \ 'lnum': str2nr(m[2]),
-            \ 'text': 'Breakpoint, line number: ' . m[2]
+            \ 'filename': file,
+            \ 'lnum': lnum,
+            \ 'text': 'Breakpoint, line number: ' . lnum
             \ })
 
     " Match function name form: break funcname
