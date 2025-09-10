@@ -6,8 +6,8 @@ function! ReadBreakpoints(filepath)
   for line in lines
 
     " Match file + line number form: break file.c:123
-    if line =~# '^break\s\+\(\f\+\):\(\d\+\)$'
-      let m = matchlist(line, '^break\s\+\(\f\+\):\(\d\+\)$')
+    if line =~# '^break\s\+\(.\{-}\):\(\d\+\)$'
+      let m = matchlist(line, '^break\s\+\(.\{-}\):\(\d\+\)$')
       let file = m[1]
       let lnum = str2nr(m[2])
 
@@ -26,9 +26,10 @@ function! ReadBreakpoints(filepath)
             \ })
 
     " Match function name form: break funcname
-    elseif line =~# '^break\s\+\(\k\+\)$'
-      let m = matchlist(line, '^break\s\+\(\k\+\)$')
-      let tags = taglist(m[1])
+    elseif line =~# '^break\s\+\(\k\+\%(::\k\+\)*\)'
+      let m = matchlist(line, '^break\s\+\(\k\+\%(::\k\+\)*\)')
+      let funcname = matchstr(m[1], '\k\+$')
+      let tags = taglist(funcname)
       if len(tags) > 0
         for t in tags
 
