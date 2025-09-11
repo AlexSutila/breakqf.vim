@@ -54,5 +54,6 @@ function! ReadBreakpoints(filepath)
   call setqflist(qflist, 'r')
 endfunction
 
+command! -nargs=1 -complete=file WriteBreakpoint call writefile(['break ' . expand('%:t') . ':' . line('.')], <f-args>, 'a')
 command! -nargs=1 -complete=file ReadBreakpoints call ReadBreakpoints(<f-args>)
 command! Mktags !ctags --fields=+n  -R .
