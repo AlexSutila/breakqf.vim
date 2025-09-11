@@ -25,7 +25,17 @@ The breakpoints file is a pre-requisite for running this command. It can be gene
 ```
 (gdb) save breakpoints <filename>
 ```
-- **Note:** This should be done ***before*** invoking `ReadBreakpoints` in the editor.
+
+##### Writing breakpoints
+```
+:WriteBreakpoint <filename>
+```
+- Is a command which will write the line under the cursor as a breakpoint to the specified file.
+
+The breakpoints file can be either sourced or re-sourced within [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) after running this command. This can be done by running the following command:
+```
+(gdb) source <filename>
+```
 
 After running `ReadBreakpoints` you can use the quickfix list as you traditionally would to navigate between breakpoints.
 - `cnext`
@@ -40,6 +50,6 @@ It is a subtle but nice thing to have as somebody who spends an enormous amount 
 The primary reason I write this in **vimscript** and not **lua** is so that it has backwards compatability with vim and older versions when you don't want to be arbitrarily installing editors on other servers *(I'm looking at you neovim elitists)*.
 
 ### Todo
-- Add `AddBreakpoint` and `RemoveBreakpoint` which automatically insert and remove breakpoints from an existing breakpoint file to eliminate the need for generating the breakpoint file in [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html).
 - Potentially support a configurable default `breakpoints.txt` that is selected implicitly when no argument is provided.
+- Tests.
 - Other ideas are welcome as well.
